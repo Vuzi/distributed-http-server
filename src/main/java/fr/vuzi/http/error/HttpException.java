@@ -1,4 +1,4 @@
-package fr.vuzi.http;
+package fr.vuzi.http.error;
 
 /**
  * HTTP Exception
@@ -19,7 +19,7 @@ public class HttpException extends Exception {
         this.errorCode = code;
     }
 
-    int getErrorCode() {
+    public int getErrorCode() {
         return errorCode;
     }
 }

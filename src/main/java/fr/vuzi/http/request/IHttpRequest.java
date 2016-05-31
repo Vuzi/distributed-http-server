@@ -1,5 +1,9 @@
-package fr.vuzi.http;
+package fr.vuzi.http.request;
 
+import fr.vuzi.http.error.HttpException;
+
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Map;
 import java.util.Set;
 
@@ -7,6 +11,8 @@ import java.util.Set;
  * Interface for an HTTP request
  */
 public interface IHttpRequest {
+
+    void read() throws HttpException, IOException;
 
     /**
      * Return the request method (i.e. GET or POST)
@@ -45,9 +51,19 @@ public interface IHttpRequest {
      */
     Set<String> getHeadersNames();
 
+    Map<String, String> getParameters();
+
+    Set<String> getParametersNames();
+
+    String getParameter(String parameter);
+
     /**
      * Return the body of the request
      * @return The body of the request
      */
     byte[] getBody();
+
+    String getHostname();
+
+    InputStream getInputStream();
 }

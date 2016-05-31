@@ -1,8 +1,9 @@
-package fr.vuzi.http;
+package fr.vuzi.http.response;
 
 import java.io.IOException;
 import java.io.InputStream;
 
+import java.io.OutputStream;
 import java.util.Map;
 
 /**
@@ -82,4 +83,12 @@ public interface IHttpResponse {
      * @throws IOException
      */
     void write() throws IOException;
+
+    /**
+     * Return true if the headers have already been sent
+     * @return True if the headers have already been sent
+     */
+    boolean headerSent();
+
+    OutputStream getOutputStream();
 }

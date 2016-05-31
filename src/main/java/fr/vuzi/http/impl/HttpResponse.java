@@ -1,17 +1,21 @@
 package fr.vuzi.http.impl;
 
-import fr.vuzi.http.IHttpRequest;
-import fr.vuzi.http.IHttpResponse;
+import fr.vuzi.http.request.IHttpRequest;
+import fr.vuzi.http.response.IHttpResponse;
 
 import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.zip.GZIPOutputStream;
 
 /**
  * IHttpResponse implementation
  */
 public class HttpResponse implements IHttpResponse {
+
+    private static Logger logger = Logger.getLogger(HttpResponse.class.getCanonicalName());
 
     private IHttpRequest request;
     private boolean headerSend = false;
@@ -137,6 +141,19 @@ public class HttpResponse implements IHttpResponse {
             outputStream.flush();
             outputStream.close();
         }
+
+        logger.log(Level.INFO, String.format("(%d) %s -> %s %s",
+                getStatus(), request.getMethod(), request.getHostname(), request.getLocation()));
+    }
+
+    @Override
+    public boolean headerSent() {
+        return headerSend;
+    }
+
+    @Override
+    public OutputStream getOutputStream() {
+        return outputStream;
     }
 
     @Override
