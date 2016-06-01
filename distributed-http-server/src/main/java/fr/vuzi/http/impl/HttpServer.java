@@ -10,14 +10,15 @@ import fr.vuzi.http.route.IHttpHostRouter;
 import fr.vuzi.http.route.IHttpRouter;
 import fr.vuzi.http.service.IHttpService;
 
+import fr.vuzi.thread.Action;
+import fr.vuzi.thread.ThreadPool;
+
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Constructor;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
@@ -109,13 +110,13 @@ public class HttpServer implements IHttpServer {
             ServerSocket serverSocket = new ServerSocket(port);
 
             // Thread pool
-            ExecutorService pool = Executors.newCachedThreadPool();
+            ThreadPool pool = new ThreadPool(16);
 
             // Main loop
             while(true) {
                 try {
                     Socket clientSocket = serverSocket.accept();
-                    pool.submit(() -> handleRequest(clientSocket));
+                    pool.submit(1, () -> handleRequest(clientSocket));
                 } catch (Exception e) {
                     logger.log(Level.SEVERE, "Socket opening failed", e);
                 }

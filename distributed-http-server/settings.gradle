@@ -1,0 +1,6 @@
+
+include ':worker-pool'
+project (":worker-pool").projectDir=file("../worker-pool")
+
+rootProject.name = 'distributed-http-server'
+
