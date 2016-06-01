@@ -134,9 +134,8 @@ public class HttpResponse implements IHttpResponse {
             byte[] buffer = new byte[1024];
             int byteRead;
 
-            while((byteRead = bodyInput.read(buffer)) == 1024)
-                outputStream.write(buffer);
-            outputStream.write(buffer, 0, byteRead);
+            while((byteRead = bodyInput.read(buffer)) > 0)
+                outputStream.write(buffer, 0, byteRead);
 
             bodyInput.close();
             outputStream.flush();

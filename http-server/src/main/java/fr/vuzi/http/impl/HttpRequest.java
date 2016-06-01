@@ -4,10 +4,9 @@ import fr.vuzi.http.error.HttpException;
 import fr.vuzi.http.request.HttpUtils;
 import fr.vuzi.http.request.IHttpRequest;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.net.InetAddress;
 import java.util.Map;
 import java.util.Set;
 
@@ -21,6 +20,7 @@ public class HttpRequest implements IHttpRequest {
     private String location;
     private String protocol;
     private String hostname;
+    private InetAddress clientAddress;
 
     private Map<String, String> headers;
 
@@ -139,4 +139,13 @@ public class HttpRequest implements IHttpRequest {
         return hostname;
     }
 
+    @Override
+    public InetAddress getClientAddress() {
+        return clientAddress;
+    }
+
+    @Override
+    public void setClientAddress(InetAddress clientAddress) {
+        this.clientAddress = clientAddress;
+    }
 }

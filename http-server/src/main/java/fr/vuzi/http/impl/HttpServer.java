@@ -15,6 +15,7 @@ import fr.vuzi.thread.ThreadPool;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Constructor;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.*;
@@ -59,10 +60,16 @@ public class HttpServer implements IHttpServer {
                 for(String serviceName : servicesNames) {
                     String servicePropertyKey = vhostName + ".services." + serviceName.trim();
 
-                    // Get the hostname
+                    // Get the route
                     String route = (String) properties.getOrDefault(servicePropertyKey + ".route", "");
 
+                    // Get the method to listen to
                     String method = (String) properties.getOrDefault(servicePropertyKey + ".method", "");
+
+                    // Route capture groups
+                    String[] route_values = ((String) properties.getOrDefault(servicePropertyKey + ".capture", "")).split(",");
+                    for(int i = 0; i < route_values.length; i++)
+                        route_values[i] = route_values[i].trim();
 
                     // Get the service class name
                     String className = (String) properties.getOrDefault(servicePropertyKey + ".class", "");
@@ -82,9 +89,9 @@ public class HttpServer implements IHttpServer {
                         }
 
                         router.addRoute(
-                                HttpMethod.valueOf(method),  // Method
+                                method.equals("*") ? HttpMethod.ALL : HttpMethod.valueOf(method),  // Method
                                 Pattern.compile(route),      // Regex path
-                                new String[0],               // Capture groups
+                                route_values,                // Capture groups
                                 (IHttpService) constructor.newInstance(serviceParameters)); // Service
                     }
                 }
@@ -136,10 +143,12 @@ public class HttpServer implements IHttpServer {
 
         OutputStream outputStream;
         InputStream inputStream;
+        InetAddress clientAddress;
 
         try {
             outputStream = clientSocket.getOutputStream();
             inputStream = clientSocket.getInputStream();
+            clientAddress = clientSocket.getInetAddress();
         } catch (Exception e) {
             logger.log(Level.SEVERE, "Socket error", e);
             return;
@@ -150,7 +159,8 @@ public class HttpServer implements IHttpServer {
         IHttpResponse response = new HttpResponse(request, outputStream);
 
         try {
-            // Parse the request
+            // Read the request
+            request.setClientAddress(clientAddress);
             request.read();
 
             // Get host router for the hostname

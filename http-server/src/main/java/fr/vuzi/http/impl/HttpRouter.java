@@ -27,7 +27,7 @@ public class HttpRouter implements IHttpRouter {
     @Override
     public IHttpService resolve(IHttpRequest request) {
         for(HttpRoute route : routes) {
-            if(!request.getMethod().equals(route.method.getMethod()))
+            if(!(route.method == HttpMethod.ALL) && !request.getMethod().equals(route.method.getMethod()))
                 continue;
 
             Matcher m = route.pattern.matcher(request.getLocation());

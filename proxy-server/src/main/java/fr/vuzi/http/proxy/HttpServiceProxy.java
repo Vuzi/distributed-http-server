@@ -57,6 +57,13 @@ public class HttpServiceProxy implements IHttpService {
         try {
             Socket socket = new Socket(destination.host, destination.port);
 
+            // Update request headers
+            String forwardedFor = request.getHeader("X-Forwarded-For");
+            if(forwardedFor != null && !forwardedFor.isEmpty())
+                request.getHeaders().put("X-Forwarded-For", forwardedFor + ", " + request.getClientAddress().toString());
+            else
+                request.getHeaders().put("X-Forwarded-For",  request.getClientAddress().toString());
+
             // Send to the server
             HttpUtils.RequestSender.send(request, socket.getOutputStream());
 

@@ -4,6 +4,7 @@ import fr.vuzi.http.error.HttpException;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.InetAddress;
 import java.util.Map;
 import java.util.Set;
 
@@ -76,4 +77,8 @@ public interface IHttpRequest {
     String getHostname();
 
     void read() throws HttpException, IOException;
+
+    InetAddress getClientAddress();
+
+    void setClientAddress(InetAddress clientAddress);
 }
