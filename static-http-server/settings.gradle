@@ -1,0 +1,9 @@
+
+include ':http-server'
+project (":http-server").projectDir=file("../http-server")
+
+include ':thread-pool'
+project (":thread-pool").projectDir=file("../thread-pool")
+
+rootProject.name = 'static-http-server'
+
