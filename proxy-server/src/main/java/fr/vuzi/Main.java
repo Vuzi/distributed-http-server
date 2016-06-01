@@ -9,8 +9,10 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * Created by vuzi on 01/06/2016.
+ */
 public class Main {
-
     private static Logger logger = Logger.getLogger(Main.class.getCanonicalName());
 
     public static void main(String[] args) {
@@ -23,11 +25,10 @@ public class Main {
 
             IHttpServer server = new HttpServer();
             server.configure(properties);
-            server.run(8081);
+            server.run(8080);
         } catch (Exception e) {
             logger.log(Level.SEVERE, "Could not load or use configuration file", e);
             System.exit(1);
         }
     }
-
 }

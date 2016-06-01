@@ -2,7 +2,7 @@ package fr.vuzi.http.impl;
 
 import fr.vuzi.http.error.HttpException;
 import fr.vuzi.http.request.IHttpRequest;
-import fr.vuzi.http.response.IHttpResponse;
+import fr.vuzi.http.request.IHttpResponse;
 import fr.vuzi.http.service.IHttpService;
 
 import java.io.*;

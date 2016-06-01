@@ -1,4 +1,4 @@
-package fr.vuzi.http.response;
+package fr.vuzi.http.request;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -91,4 +91,6 @@ public interface IHttpResponse {
     boolean headerSent();
 
     OutputStream getOutputStream();
+
+    void setEncodingType(HttpEncoding encodingType);
 }

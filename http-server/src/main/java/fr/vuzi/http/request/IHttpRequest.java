@@ -12,13 +12,13 @@ import java.util.Set;
  */
 public interface IHttpRequest {
 
-    void read() throws HttpException, IOException;
-
     /**
      * Return the request method (i.e. GET or POST)
      * @return The request method
      */
     String getMethod();
+
+    void setMethod(String method);
 
     /**
      * Return the URI requested
@@ -26,11 +26,15 @@ public interface IHttpRequest {
      */
     String getLocation();
 
+    void setLocation(String location);
+
     /**
      * Return the protocol. Should always be HTTP/1.1
      * @return The protocol used
      */
     String getProtocol();
+
+    void setProtocol(String protocol);
 
     /**
      * Return the requested header, or null if not found
@@ -45,6 +49,8 @@ public interface IHttpRequest {
      */
     Map<String, String> getHeaders();
 
+    void setHeaders(Map<String, String> headers);
+
     /**
      * Return all the headers names
      * @return The headers names
@@ -57,13 +63,17 @@ public interface IHttpRequest {
 
     String getParameter(String parameter);
 
+    void setParameters(Map<String, String> parameters);
+
     /**
      * Return the body of the request
      * @return The body of the request
      */
     byte[] getBody();
 
+    void setBody(byte[] body);
+
     String getHostname();
 
-    InputStream getInputStream();
+    void read() throws HttpException, IOException;
 }

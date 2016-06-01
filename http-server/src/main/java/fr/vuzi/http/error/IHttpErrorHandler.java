@@ -1,7 +1,7 @@
 package fr.vuzi.http.error;
 
 import fr.vuzi.http.request.IHttpRequest;
-import fr.vuzi.http.response.IHttpResponse;
+import fr.vuzi.http.request.IHttpResponse;
 
 public interface IHttpErrorHandler {
 

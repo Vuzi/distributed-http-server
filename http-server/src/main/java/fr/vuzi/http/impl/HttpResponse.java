@@ -1,7 +1,8 @@
 package fr.vuzi.http.impl;
 
+import fr.vuzi.http.request.HttpEncoding;
 import fr.vuzi.http.request.IHttpRequest;
-import fr.vuzi.http.response.IHttpResponse;
+import fr.vuzi.http.request.IHttpResponse;
 
 import java.io.*;
 import java.util.HashMap;
@@ -24,7 +25,7 @@ public class HttpResponse implements IHttpResponse {
     private String protocol = "HTTP/1.1";
     private int status = 200;
     private String textStatus;
-    private EncodingType encodingType = EncodingType.AUTO;
+    private HttpEncoding encodingType = HttpEncoding.AUTO;
 
     private Map<String, String> headers = new HashMap<>();
 
@@ -98,7 +99,7 @@ public class HttpResponse implements IHttpResponse {
             throw new IOException("Header already sent");
 
         // Body compression
-        if(encodingType == EncodingType.AUTO)
+        if(encodingType == HttpEncoding.AUTO)
             encodingType = detectEncodingToUse();
 
         if(encodingType.headerName != null)
@@ -161,27 +162,28 @@ public class HttpResponse implements IHttpResponse {
         this.bodyInput = inputStream;
     }
 
-    private EncodingType detectEncodingToUse() {
+    private HttpEncoding detectEncodingToUse() {
         String acceptedEncoding = request.getHeader("Accept-Encoding");
 
         if(acceptedEncoding == null)
-            return EncodingType.NONE;
+            return HttpEncoding.NONE;
 
         acceptedEncoding = acceptedEncoding.toLowerCase();
 
-        for(EncodingType encodingType : EncodingType.values()) {
+        for(HttpEncoding encodingType : HttpEncoding.values()) {
             if(encodingType.headerName != null && acceptedEncoding.contains(encodingType.headerName))
                 return encodingType;
         }
 
-        return EncodingType.NONE;
+        return HttpEncoding.NONE;
     }
 
     /**
      * Set the encoding type
      * @param encodingType The new encoding type
      */
-    public void setEncodingType(EncodingType encodingType) {
+    @Override
+    public void setEncodingType(HttpEncoding encodingType) {
         this.encodingType = encodingType;
     }
 
@@ -203,35 +205,5 @@ public class HttpResponse implements IHttpResponse {
         }
     }
 
-    /**
-     * Encoding type enumeration
-     */
-    public enum EncodingType {
-        AUTO(null), GZIP("gzip"), NONE(null);
-
-        private String headerName;
-
-        EncodingType(String headerName) {
-            this.headerName = headerName;
-        }
-
-        /**
-         * Wrap the provided stream in an encoded stream
-         * @param outputStream The stream to be encoded
-         * @return The encoding stream, or the provided stream is no encoding is defined
-         * @throws IOException
-         */
-        public OutputStream encodeOutputStream(OutputStream outputStream) throws IOException {
-            switch (this) {
-                case GZIP:
-                    return new GZIPOutputStream(outputStream);
-                case AUTO:
-                case NONE:
-                    return outputStream;
-            }
-
-            return null;
-        }
-    }
 
 }

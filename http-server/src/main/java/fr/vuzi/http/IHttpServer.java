@@ -22,7 +22,7 @@ public interface IHttpServer {
     /**
      * Start the server on the specified port
      */
-    void run();
+    void run(int port);
 
     /**
      * Stop the server
