@@ -10,7 +10,6 @@ import fr.vuzi.http.route.IHttpHostRouter;
 import fr.vuzi.http.route.IHttpRouter;
 import fr.vuzi.http.service.IHttpService;
 
-import fr.vuzi.thread.Action;
 import fr.vuzi.thread.ThreadPool;
 
 import java.io.InputStream;
