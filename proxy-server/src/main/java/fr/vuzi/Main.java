@@ -9,9 +9,6 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- * Created by vuzi on 01/06/2016.
- */
 public class Main {
     private static Logger logger = Logger.getLogger(Main.class.getCanonicalName());
 

@@ -1,6 +1,7 @@
 package fr.vuzi.http.proxy;
 
 import fr.vuzi.http.error.HttpException;
+import fr.vuzi.http.request.HttpCookie;
 import fr.vuzi.http.request.HttpUtils;
 import fr.vuzi.http.request.IHttpRequest;
 import fr.vuzi.http.request.IHttpResponse;
@@ -53,6 +54,8 @@ public class HttpServiceProxy implements IHttpService {
 
         logger.info(String.format("Proxy request %d to %s %s -> %s",
                 i, request.getHostname(), request.getLocation(), destination.host));
+
+        //HttpCookie stikyCookie = request.getCookie("ID");
 
         try {
             Socket socket = new Socket(destination.host, destination.port);

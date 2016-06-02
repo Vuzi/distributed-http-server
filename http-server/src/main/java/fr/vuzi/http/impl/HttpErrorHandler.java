@@ -20,7 +20,7 @@ public class HttpErrorHandler implements IHttpErrorHandler {
             if(response.headerSent()) {
                 // Headers are already sent, can't do anything beside logging the error
                 logger.log(Level.WARNING, "Error after headers sent", error);
-                    response.getOutputStream().close();
+                response.getOutputStream().close();
                 return;
             }
 

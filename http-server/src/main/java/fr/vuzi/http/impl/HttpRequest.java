@@ -1,14 +1,15 @@
 package fr.vuzi.http.impl;
 
 import fr.vuzi.http.error.HttpException;
+import fr.vuzi.http.request.HttpCookie;
 import fr.vuzi.http.request.HttpUtils;
 import fr.vuzi.http.request.IHttpRequest;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetAddress;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * IHttpRequest implementation
@@ -23,6 +24,7 @@ public class HttpRequest implements IHttpRequest {
     private InetAddress clientAddress;
 
     private Map<String, String> headers;
+    private List<HttpCookie> cookies;
 
     private Map<String, String> parameters;
 
@@ -31,8 +33,6 @@ public class HttpRequest implements IHttpRequest {
     /**
      * Default constructor where the provided stream is read and analysed to get all the request information
      * @param in The input stream
-     * @throws HttpException
-     * @throws IOException
      */
     public HttpRequest(InputStream in) {
         this.inputStream = in;
@@ -45,6 +45,9 @@ public class HttpRequest implements IHttpRequest {
         guessHostname();
     }
 
+    /**
+     * Guess the hostname from the "host" header
+     */
     private void guessHostname() {
         hostname = headers.get("host");
         if(hostname != null) {
@@ -100,18 +103,8 @@ public class HttpRequest implements IHttpRequest {
     }
 
     @Override
-    public Set<String> getHeadersNames() {
-        return headers.keySet();
-    }
-
-    @Override
     public Map<String, String> getParameters() {
         return parameters;
-    }
-
-    @Override
-    public Set<String> getParametersNames() {
-        return parameters.keySet();
     }
 
     @Override
@@ -147,5 +140,15 @@ public class HttpRequest implements IHttpRequest {
     @Override
     public void setClientAddress(InetAddress clientAddress) {
         this.clientAddress = clientAddress;
+    }
+
+    @Override
+    public List<HttpCookie> getCookies() {
+        return cookies;
+    }
+
+    @Override
+    public void setCookies(List<HttpCookie> cookies) {
+        this.cookies = cookies;
     }
 }

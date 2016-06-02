@@ -5,6 +5,7 @@ import fr.vuzi.http.request.IHttpRequest;
 import fr.vuzi.http.request.IHttpResponse;
 
 import java.io.*;
+import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -17,6 +18,7 @@ import java.util.zip.GZIPOutputStream;
 public class HttpResponse implements IHttpResponse {
 
     private static Logger logger = Logger.getLogger(HttpResponse.class.getCanonicalName());
+    private final Socket socket;
 
     private IHttpRequest request;
     private boolean headerSend = false;
@@ -37,8 +39,9 @@ public class HttpResponse implements IHttpResponse {
      * @param request Request, used to automatically determine response elements
      * @param outputStream Thew output stream where to write
      */
-    public HttpResponse(IHttpRequest request, OutputStream outputStream) {
+    public HttpResponse(IHttpRequest request, OutputStream outputStream, Socket socket) {
         this.request = request;
+        this.socket = socket;
         this.outputStream = outputStream;
     }
 
@@ -134,12 +137,14 @@ public class HttpResponse implements IHttpResponse {
             byte[] buffer = new byte[1024];
             int byteRead;
 
-            while((byteRead = bodyInput.read(buffer)) > 0)
+            while((byteRead = bodyInput.read(buffer)) > 0) {
                 outputStream.write(buffer, 0, byteRead);
+            }
 
-            bodyInput.close();
             outputStream.flush();
             outputStream.close();
+
+            bodyInput.close();
         }
 
         logger.log(Level.INFO, String.format("(%d) %s -> %s %s",
@@ -195,10 +200,14 @@ public class HttpResponse implements IHttpResponse {
         switch (status) {
             case 200:
                 return "OK";
+            case 304:
+                return "Not Modified";
             case 404:
                 return "Not Found";
             case 400:
                 return "Bad Request";
+            case 500:
+                return "Server Error";
             default:
                 return "Error Unknown";
         }

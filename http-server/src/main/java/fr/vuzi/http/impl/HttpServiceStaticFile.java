@@ -7,6 +7,7 @@ import fr.vuzi.http.service.IHttpService;
 
 import java.io.*;
 import java.net.URLConnection;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.ParseException;
@@ -15,8 +16,12 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class HttpServiceStaticFile implements IHttpService {
+
+    private static Logger logger = Logger.getLogger(HttpServiceStaticFile.class.getCanonicalName());
 
     private File folderPath;
 
@@ -50,7 +55,7 @@ public class HttpServiceStaticFile implements IHttpService {
         Date modifiedSince = getDateFrom(request.getHeader("If-Modified-Since"));
         Date fileLastModified = new Date(resource.lastModified());
 
-        if (modifiedSince != null && !fileLastModified.before(modifiedSince)) {
+        if (modifiedSince != null && fileLastModified.compareTo(modifiedSince) > 0) {
             response.setStatus(304);
         } else {
             response.setStatus(200);
@@ -58,13 +63,19 @@ public class HttpServiceStaticFile implements IHttpService {
             try {
                 response.setBody(new FileInputStream(resource));
             } catch (IOException e) {
+                response.setBody(new byte[0]);
                 e.printStackTrace();
             }
         }
 
         // Set file information
         response.setHeader("Last-Modified", getFormattedDate(fileLastModified));
-        response.setHeader("ContentType", URLConnection.guessContentTypeFromName(resource.getName()));
+        try {
+            response.setHeader("Content-Type", Files.probeContentType(Paths.get(resource.getName())));
+        } catch (IOException e) {
+            logger.log(Level.SEVERE, String.format("MIME type probe on %s failed", resource.getName()), e);
+            response.setHeader("Content-Type", "application/octet-stream");
+        }
     }
 
     private void showDirectory(File resource, IHttpRequest request, IHttpResponse response) {
@@ -81,7 +92,7 @@ public class HttpServiceStaticFile implements IHttpService {
                 "</body>" +
                 "</html>");
 
-        response.setHeader("ContentType", URLConnection.guessContentTypeFromName("text/html"));
+        response.setHeader("Content-Type", "text/html");
 
         response.setBody(sb.toString());
     }
@@ -124,7 +135,7 @@ public class HttpServiceStaticFile implements IHttpService {
 
         try {
             return dateFormatter.parse(date);
-        } catch (ParseException e) {
+        } catch (Exception e) {
             return null;
         }
     }

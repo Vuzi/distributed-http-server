@@ -12,6 +12,7 @@ import fr.vuzi.http.service.IHttpService;
 
 import fr.vuzi.thread.ThreadPool;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Constructor;
@@ -151,12 +152,17 @@ public class HttpServer implements IHttpServer {
             clientAddress = clientSocket.getInetAddress();
         } catch (Exception e) {
             logger.log(Level.SEVERE, "Socket error", e);
+            try {
+                clientSocket.close();
+            } catch (IOException closeExcept) {
+                logger.log(Level.SEVERE, "HTTP error during processing", closeExcept);
+            }
             return;
         }
 
         // Response & request creation
         IHttpRequest request = new HttpRequest(inputStream);
-        IHttpResponse response = new HttpResponse(request, outputStream);
+        IHttpResponse response = new HttpResponse(request, outputStream, clientSocket);
 
         try {
             // Read the request
@@ -182,6 +188,12 @@ public class HttpServer implements IHttpServer {
         } catch (Exception e) {
             logger.log(Level.SEVERE, "HTTP error during processing", e);
             defaultErrorHandler.handleError(e, request, response);
+        } finally {
+            try {
+                clientSocket.close();
+            } catch (IOException e) {
+                logger.log(Level.SEVERE, "Socket closing failed", e);
+            }
         }
 
         // Performance loading

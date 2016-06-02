@@ -33,7 +33,7 @@ public class ThreadPool {
     private void submit(PrioritizedAction action) {
         synchronized (lock) {
             actions.add(action);
-            lock.notify();
+            lock.notifyAll();
         }
     }
 

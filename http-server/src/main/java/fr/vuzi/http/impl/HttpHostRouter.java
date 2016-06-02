@@ -6,6 +6,9 @@ import fr.vuzi.http.route.IHttpRouter;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Default host router implementation
+ */
 public class HttpHostRouter implements IHttpHostRouter {
 
     private Map<String, IHttpRouter> routes = new HashMap<>();
