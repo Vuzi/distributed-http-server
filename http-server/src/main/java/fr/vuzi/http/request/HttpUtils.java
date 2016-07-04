@@ -155,11 +155,13 @@ public class HttpUtils {
 
         public static void parseBody(IHttpRequest request, InputStream inputStream) throws HttpException, IOException {
             String contentLength = request.getHeader("content-length");
+            boolean hasContentLength = false;
             int bodySize = 1024;
 
             if(contentLength != null) {
                 try {
                     bodySize = Integer.valueOf(contentLength);
+                    hasContentLength = true;
                 } catch(NumberFormatException e) {
                     bodySize = -1;
                 }
@@ -180,6 +182,9 @@ public class HttpUtils {
             do {
                 int b = inputStream.read();
 
+                if (b < 0)
+                    break; // End of stream
+
                 if (i >= body.length) {
                     // Need to resize the buffer
                     int size = (int) (body.length * 1.5);
@@ -192,10 +197,13 @@ public class HttpUtils {
                     body = newBuffer;
                 }
 
-                if (b < 0)
-                    break; // End of stream
-
                 body[i++] = (byte) b;
+
+                if(hasContentLength && i >= bodySize) {
+                    i--;
+                    break; // If content length is specified
+                }
+
             } while (true);
 
             if(i != (body.length - 1)) {
