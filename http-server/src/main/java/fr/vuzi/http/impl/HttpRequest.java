@@ -8,6 +8,8 @@ import fr.vuzi.http.request.IHttpRequest;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetAddress;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -19,7 +21,7 @@ public class HttpRequest implements IHttpRequest {
 
     private String method;
     private String location;
-    private String protocol;
+    private String protocol = "HTTP/1.1";
     private String hostname;
     private InetAddress clientAddress;
 
@@ -38,9 +40,20 @@ public class HttpRequest implements IHttpRequest {
         this.inputStream = in;
     }
 
+    /**
+     * Empty constructor
+     */
+    public HttpRequest() {
+        headers = new HashMap<>();
+        cookies = new ArrayList<>();
+        parameters = new HashMap<>();
+    }
+
     @Override
     public void read() throws HttpException, IOException {
         HttpUtils.RequestParser.parse(this, inputStream);
+
+        parameters = new HashMap<>();
 
         guessHostname();
     }

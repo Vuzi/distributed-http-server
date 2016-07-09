@@ -65,7 +65,7 @@ public class HttpServer implements IHttpServer {
                     String route = (String) properties.getOrDefault(servicePropertyKey + ".route", "");
 
                     // Get the method to listen to
-                    String method = (String) properties.getOrDefault(servicePropertyKey + ".method", "");
+                    String[] methods = ((String) properties.getOrDefault(servicePropertyKey + ".method", "")).split(",");
 
                     // Route capture groups
                     String[] route_values = ((String) properties.getOrDefault(servicePropertyKey + ".capture", "")).split(",");
@@ -89,11 +89,15 @@ public class HttpServer implements IHttpServer {
                             serviceParameters.put(shortKey, (String) properties.getOrDefault(serviceParameterKey, ""));
                         }
 
-                        router.addRoute(
-                                method.equals("*") ? HttpMethod.ALL : HttpMethod.valueOf(method),  // Method
-                                Pattern.compile(route),      // Regex path
-                                route_values,                // Capture groups
-                                (IHttpService) constructor.newInstance(serviceParameters)); // Service
+                        for(String method : methods) {
+                            method = method.trim();
+
+                            router.addRoute(
+                                    method.equals("*") ? HttpMethod.ALL : HttpMethod.valueOf(method),  // Method
+                                    Pattern.compile(route),      // Regex path
+                                    route_values,                // Capture groups
+                                    (IHttpService) constructor.newInstance(serviceParameters)); // Service
+                        }
                     }
                 }
 

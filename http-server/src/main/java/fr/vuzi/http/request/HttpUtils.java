@@ -200,15 +200,16 @@ public class HttpUtils {
                 body[i++] = (byte) b;
 
                 if(hasContentLength && i >= bodySize) {
-                    i--;
                     break; // If content length is specified
                 }
 
             } while (true);
 
+            i--;
+
             if(i != (body.length - 1)) {
                 byte[] resizeBody = new byte[i + 1];
-                System.arraycopy(body, 0, resizeBody, 0, i);
+                System.arraycopy(body, 0, resizeBody, 0, i + 1);
                 body = resizeBody;
             }
             request.setBody(body);

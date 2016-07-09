@@ -45,6 +45,13 @@ public class HttpResponse implements IHttpResponse {
         this.outputStream = outputStream;
     }
 
+    /**
+     * Empty constructor
+     */
+    public HttpResponse() {
+        this.socket = null;
+    }
+
     @Override
     public void setProtocol(String protocol) {
         this.protocol = protocol;
@@ -164,6 +171,10 @@ public class HttpResponse implements IHttpResponse {
     @Override
     public void setBody(InputStream inputStream) {
         this.bodyInput = inputStream;
+    }
+
+    public InputStream getBody() {
+        return bodyInput;
     }
 
     private HttpEncoding detectEncodingToUse() {

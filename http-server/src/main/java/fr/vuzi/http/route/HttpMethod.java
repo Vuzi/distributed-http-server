@@ -1,7 +1,7 @@
 package fr.vuzi.http.route;
 
 public enum HttpMethod {
-    GET("GET"), POST("GET"), PUT("PUT"), DELETE("DELETE"), ALL("*");
+    GET("GET"), POST("POST"), PUT("PUT"), DELETE("DELETE"), ALL("*");
 
     private String method;
 
