@@ -50,6 +50,7 @@ public class HttpUtils {
             }
             outputStream.write("\r\n".getBytes());
             outputStream.write(request.getBody());
+            outputStream.flush();
         }
 
     }
@@ -126,7 +127,7 @@ public class HttpUtils {
         }
 
         public static void parseRequest(IHttpRequest request, InputStream inputStream) throws HttpException, IOException {
-            String requestValues[] = HttpUtils.readLine(inputStream).split(" ");
+            String requestValues[] = readLine(inputStream).split(" ");
             if(requestValues.length != 3)
                 throw new HttpException(405, "Invalid HTTP request method");
 
